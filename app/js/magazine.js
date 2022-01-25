@@ -13,8 +13,8 @@ function addPage(page, book) {
 	if (book.turn('addPage', element, page)) {
 
 		// Add the initial HTML
-		// It will contain a loader indicator and a gradient
-		element.html('<div class="gradient"></div><div class="loader"></div>');
+		// It will contain a loader indicator
+		element.html('<div class="loader"></div>');
 
 		// Load the page
 		loadPage(page, element);
@@ -48,10 +48,9 @@ function loadPage(page, pageElement) {
 
 	// Load the page
 
-	img.attr('src', 'pages/' +  page + '.jpg');
-
-	loadRegions(page, pageElement);
-
+	var who = qs('who');
+	var who = ((page != 3 || who == '' ) ? '' : '-' + qs('who'));
+	img.attr('src', 'pages/' +  page + '-' + qs('loc') + '-medium' + who + '.jpg');
 }
 
 // Zoom in / Zoom out
@@ -59,108 +58,15 @@ function loadPage(page, pageElement) {
 function zoomTo(event) {
 
 		setTimeout(function() {
-			if ($('.magazine-viewport').data().regionClicked) {
-				$('.magazine-viewport').data().regionClicked = false;
+			if ($('.magazine-viewport').zoom('value')==1) {
+				$('.magazine-viewport').zoom('zoomIn', event);
 			} else {
-				if ($('.magazine-viewport').zoom('value')==1) {
-					$('.magazine-viewport').zoom('zoomIn', event);
-				} else {
-					$('.magazine-viewport').zoom('zoomOut');
-				}
+				$('.magazine-viewport').zoom('zoomOut');
 			}
 		}, 1);
 
 }
 
-
-
-// Load regions
-
-function loadRegions(page, element) {
-
-	$.getJSON('pages/'+page+'-regions.json').
-		done(function(data) {
-
-			$.each(data, function(key, region) {
-				addRegion(region, element);
-			});
-		});
-}
-
-// Add region
-
-function addRegion(region, pageElement) {
-	
-	var reg = $('<div />', {'class': 'region  ' + region['class']}),
-		options = $('.magazine').turn('options'),
-		pageWidth = options.width/2,
-		pageHeight = options.height;
-
-	reg.css({
-		top: Math.round(region.y/pageHeight*100)+'%',
-		left: Math.round(region.x/pageWidth*100)+'%',
-		width: Math.round(region.width/pageWidth*100)+'%',
-		height: Math.round(region.height/pageHeight*100)+'%'
-	}).attr('region-data', $.param(region.data||''));
-
-
-	reg.appendTo(pageElement);
-}
-
-// Process click on a region
-
-function regionClick(event) {
-
-	var region = $(event.target);
-
-	if (region.hasClass('region')) {
-
-		$('.magazine-viewport').data().regionClicked = true;
-		
-		setTimeout(function() {
-			$('.magazine-viewport').data().regionClicked = false;
-		}, 100);
-		
-		var regionType = $.trim(region.attr('class').replace('region', ''));
-
-		return processRegion(region, regionType);
-
-	}
-
-}
-
-// Process the data of every region
-
-function processRegion(region, regionType) {
-
-	data = decodeParams(region.attr('region-data'));
-
-	switch (regionType) {
-		case 'link' :
-
-			window.open(data.url);
-
-		break;
-		case 'zoom' :
-
-			var regionOffset = region.offset(),
-				viewportOffset = $('.magazine-viewport').offset(),
-				pos = {
-					x: regionOffset.left-viewportOffset.left,
-					y: regionOffset.top-viewportOffset.top
-				};
-
-			$('.magazine-viewport').zoom('zoomIn', pos);
-
-		break;
-		case 'to-page' :
-
-			$('.magazine').turn('page', data.page);
-
-		break;
-	}
-
-}
 
 // Load large page
 
@@ -179,7 +85,11 @@ function loadLargePage(page, pageElement) {
 
 	// Loadnew page
 	
-	img.attr('src', 'pages/' +  page + '-large.jpg');
+	var loc = qs('loc');
+	loc = ((loc == '') ? '' : '-' + loc);
+	var who = qs('who');
+	var who = ((page != 3 || who == '' ) ? '' : '-' + who);
+	img.attr('src', 'pages/' +  page + loc + '-large'+ who + '.jpg');
 }
 
 // Load small page
@@ -193,7 +103,11 @@ function loadSmallPage(page, pageElement) {
 	img.unbind('load');
 	// Loadnew page
 
-	img.attr('src', 'pages/' +  page + '.jpg');
+	var loc = qs('loc');
+	loc = ((loc == '') ? '' : '-' + loc);
+	var who = qs('who');
+	var who = ((page != 3 || who == '' ) ? '' : '-' + who);
+	img.attr('src', 'pages/' +  page + loc + '-medium'+ who + '.jpg');
 }
 
 // http://code.google.com/p/chromium/issues/detail?id=128488
