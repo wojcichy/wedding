@@ -51,6 +51,16 @@ function loadPage(page, pageElement) {
 	var who = qs('who');
 	var who = ((page != 3 || who == '' ) ? '' : '-' + qs('who'));
 	img.attr('src', 'pages/' +  page + '-' + qs('loc') + '-medium' + who + '.jpg');
+
+	pageElement.click(function() {
+		var $this = $(this);
+		if ($this.hasClass('even')) {
+			$('.magazine').turn('previous');
+		}
+		if ($this.hasClass('odd')) {
+			$('.magazine').turn('next');
+		}
+	})
 }
 
 // Zoom in / Zoom out
