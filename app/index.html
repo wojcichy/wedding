@@ -288,6 +288,15 @@ function loadApp() {
 		}
 	});
 
+	$(window).on( "swipeleft", function( event ) { 
+        $('.magazine').turn('next');
+               } );
+
+
+	$(window).on( "swiperight", function( event ) { 
+        $('.magazine').turn('previous');
+               } );
+
 	// URIs - Format #/page/1 
 
 	Hash.on('^page\/([0-9]*)$', {
