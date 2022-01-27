@@ -48,9 +48,7 @@ function loadPage(page, pageElement) {
 
 	// Load the page
 
-	var who = qs('who');
-	var who = ((page != 3 || who == '' ) ? '' : '-' + qs('who'));
-	img.attr('src', 'pages/' +  page + '-' + qs('loc') + '-medium' + who + '.jpg');
+	img.attr('src', getImagePath(page, 'medium'));
 }
 
 // Zoom in / Zoom out
@@ -84,12 +82,7 @@ function loadLargePage(page, pageElement) {
 	});
 
 	// Loadnew page
-	
-	var loc = qs('loc');
-	loc = ((loc == '') ? '' : '-' + loc);
-	var who = qs('who');
-	var who = ((page != 3 || who == '' ) ? '' : '-' + who);
-	img.attr('src', 'pages/' +  page + loc + '-large'+ who + '.jpg');
+	img.attr('src', getImagePath(page, 'large'));
 }
 
 // Load small page
@@ -97,17 +90,11 @@ function loadLargePage(page, pageElement) {
 function loadSmallPage(page, pageElement) {
 	
 	var img = pageElement.find('img');
-
 	img.css({width: '100%', height: '100%'});
-
 	img.unbind('load');
-	// Loadnew page
 
-	var loc = qs('loc');
-	loc = ((loc == '') ? '' : '-' + loc);
-	var who = qs('who');
-	var who = ((page != 3 || who == '' ) ? '' : '-' + who);
-	img.attr('src', 'pages/' +  page + loc + '-medium'+ who + '.jpg');
+	// Loadnew page
+	img.attr('src', getImagePath(page, 'medium'));
 }
 
 // http://code.google.com/p/chromium/issues/detail?id=128488
@@ -212,43 +199,6 @@ function moveBar(yes) {
 	}
 }
 
-function setPreview(view) {
-
-	var previewWidth = 112,
-		previewHeight = 73,
-		previewSrc = 'pages/preview.jpg',
-		preview = $(_thumbPreview.children(':first')),
-		numPages = (view==1 || view==$('#slider').slider('option', 'max')) ? 1 : 2,
-		width = (numPages==1) ? previewWidth/2 : previewWidth;
-
-	_thumbPreview.
-		addClass('no-transition').
-		css({width: width + 15,
-			height: previewHeight + 15,
-			top: -previewHeight - 30,
-			left: ($($('#slider').children(':first')).width() - width - 15)/2
-		});
-
-	preview.css({
-		width: width,
-		height: previewHeight
-	});
-
-	if (preview.css('background-image')==='' ||
-		preview.css('background-image')=='none') {
-
-		preview.css({backgroundImage: 'url(' + previewSrc + ')'});
-
-		setTimeout(function(){
-			_thumbPreview.removeClass('no-transition');
-		}, 0);
-
-	}
-
-	preview.css({backgroundPosition:
-		'0px -'+((view-1)*previewHeight)+'px'
-	});
-}
 
 // Width of the flipbook when zoomed in
 

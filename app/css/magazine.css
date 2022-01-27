@@ -94,8 +94,8 @@ body{
 	width:22px;
 	height:22px;
 	position:absolute;
-	top:280px;
-	left:219px;
+	top:50%;
+	left:50%;
 }
 
 .magazine-viewport .shadow{
@@ -317,12 +317,12 @@ body{
 .zoom-icon{
 	position:absolute;
 	z-index:1000;
-	width:48px;
-	height:48px;
-	top:5%;
-	right:5%;
-	background-image:url(../pics/zoom.png);
-	background-size:96px 48px;
+	width:100px;
+	height:100px;
+	top:3%;
+	right:3%;
+	background-image:url(../pics/icons.png);
+	background-size:600px 100px;
 }
 
 .zoom-icon-in{
@@ -331,16 +331,33 @@ body{
 }
 
 .zoom-icon-in.zoom-icon-in-hover{
-	background-position:-48px 0;
+	background-position:-100px 0;
 	cursor: pointer;
 }
 
 .zoom-icon-out{
-	background-position:0px 0;
+	background-position:-200px 0;
 }
 
 .zoom-icon-out.zoom-icon-out-hover{
-	background-position:-48px 0;
+	background-position:-300px 0;
+	cursor: pointer;
+}
+
+.download-icon{
+	position:absolute;
+	z-index:1000;
+	width:100px;
+	height:100px;
+	top:3%;
+	left:3%;
+	background-image:url(../pics/icons.png);
+	background-size:600px 100px;
+	background-position:-400px 0;
+}
+
+.download-icon.hover{
+	background-position:-500px 0;
 	cursor: pointer;
 }
 

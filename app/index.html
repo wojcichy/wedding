@@ -19,6 +19,7 @@
 <div id="canvas">
 
 <div class="zoom-icon zoom-icon-in"></div>
+<div class="download-icon download-icon-light"></div>
 
 <div class="magazine-viewport">
 	<div class="container">
@@ -36,16 +37,16 @@
 	<div>
 		<ul>
 			<li class="i">
-				<img src="pages/1-thumb.jpg" width="100" height="100" class="page-1">
+				<img src="pages/1-pl-thumb.jpg" width="100" height="100" class="page-1" data-page="1">
 				<span>1</span>
 			</li>
 			<li class="d">
-				<img src="pages/2-thumb.jpg" width="100" height="100" class="page-2">
-				<img src="pages/3-thumb.jpg" width="100" height="100" class="page-3">
+				<img src="pages/2-pl-thumb.jpg" width="100" height="100" class="page-2" data-page="2">
+				<img src="pages/3-pl-thumb.jpg" width="100" height="100" class="page-3" data-page="3">
 				<span>2-3</span>
 			</li>
 			<li class="i">
-				<img src="pages/4-thumb.jpg" width="100" height="100" class="page-4">
+				<img src="pages/4-pl-thumb.jpg" width="100" height="100" class="page-4" data-page="4">
 				<span>4</span>
 			</li>
 		<ul>
@@ -61,19 +62,33 @@ function qs(key) {
     return match && decodeURIComponent(match[1].replace(/\+/g, " "));
 }
 
+function getLocSizeWhoPart(size, page) {
+
+	var loc = qs('loc');
+	loc = ((loc == null || loc == '') ? 'pl' : loc);
+
+	var validSizes = ['thumb', 'medium', 'large'];
+	var size = ((validSizes.includes(size)) ? '-' + size : '');
+
+	var who = qs('who');
+	var who = ((page != undefined && page != 3 || who == null || who == '') ? '' : '-' + who);
+
+	return loc + size + who;
+}
+
+function getImagePath(page, imageSize) {
+	return 'pages/' + page + '-' + getLocSizeWhoPart(imageSize, page) + '.jpg';
+}
+
+function getPdfFilePath() {
+	return 'files/' + getLocSizeWhoPart() + '.pdf';
+}
+
 function start() {
 	$('.thumbnails img').each(function() { 
 		var $this = $(this);
-		var replaced = $this.attr('src').replace('thumb', qs('loc') + '-thumb');
-		$this.attr('src', replaced)
-	});
-
-	$('.thumbnails .page-3').each(function() { 
-		var $this = $(this);
-		var who = qs('who');
-		who = ((who == '') ? '' : '-' + qs('who'));
-		var replaced = $this.attr('src').replace('thumb', 'thumb' + who);
-		$this.attr('src', replaced)
+		var page = $this.data('page')
+		$this.attr('src', getImagePath(page, 'thumb'));
 	});
 		
 	loadApp();
@@ -86,14 +101,12 @@ function loadApp() {
  	var flipbook = $('.magazine');
 
  	// Check if the CSS was already loaded
-	
 	if (flipbook.width()==0 || flipbook.height()==0) {
 		setTimeout(loadApp, 10);
 		return;
 	}
 	
 	// Create the flipbook
-
 	flipbook.turn({
 			// Magazine width
 			width: 1300,
@@ -185,18 +198,6 @@ function loadApp() {
 		}, 
 
 		when: {
-
-			swipeLeft: function() {
-
-				// $(this).zoom('flipbook').turn('next');
-
-			},
-
-			swipeRight: function() {
-				
-				// $(this).zoom('flipbook').turn('previous');
-
-			},
 
 			resize: function(event, scale, page, pageElement) {
 
@@ -434,12 +435,28 @@ function loadApp() {
 
  }).bind('click', function() {
 
- 	if ($(this).hasClass('zoom-icon-in'))
- 		$('.magazine-viewport').zoom('zoomIn');
- 	else if ($(this).hasClass('zoom-icon-out'))	
+ 	if ($(this).hasClass('zoom-icon-in')){
+		$('.magazine-viewport').zoom('zoomIn');
+		$(this).removeClass('zoom-icon-in-hover');
+	 }
+ 	else if ($(this).hasClass('zoom-icon-out'))	{
+		$(this).removeClass('zoom-icon-out-hover');
 		$('.magazine-viewport').zoom('zoomOut');
+	 }
 
  });
+
+ // Download icon
+
+ $('.download-icon').bind('mouseover', function() { 
+	$(this).addClass('hover');
+ 
+ }).bind('mouseout', function() { 
+	$(this).removeClass('hover');
+ }).bind('click', function() {
+	window.location.href = getPdfFilePath()
+	$(this).removeClass('hover');
+})
 
  $('#canvas').hide();
 
